@@ -2,13 +2,13 @@
 
 # One-command Raspberry Pi 5 setup installer
 # Downloads and runs the complete setup automatically
+# System update and time sync are SKIPPED.
 
 set -e
 
-echo "🚀 Raspberry Pi 5 Auto Setup"
-echo "============================"
+echo "🚀 Raspberry Pi 5 Auto Setup (Skipping Updates)"
+echo "==============================================="
 echo "This will:"
-echo "  ✅ Update system (apt update && apt full-upgrade)"
 echo "  ✅ Switch to X11"
 echo "  ✅ Setup auto-dimming (30 second timeout)"
 echo "  ✅ Configure autostart on every boot"
@@ -22,10 +22,9 @@ fi
 
 echo "📦 Starting setup..."
 
-# System update
-echo "🔄 Updating system packages..."
-sudo apt update
-sudo apt full-upgrade -y
+# --- SKIPPING SYSTEM UPDATE AND TIME SYNC ---
+echo "⏩ Skipping system update and time sync as requested."
+# --- END SKIPPING ---
 
 # Switch to X11
 echo "🖥️  Switching to X11..."
