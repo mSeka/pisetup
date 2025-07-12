@@ -42,7 +42,7 @@ sudo tee /usr/local/bin/auto-dim.sh > /dev/null << 'EOF'
 IDLE_TIME_MS=5000 # Changed to 5 seconds
 DIM_BRIGHTNESS=51
 NORMAL_BRIGHTNESS=255
-BACKLIGHT_PATH="/sys/class/backlight/10-0045/brightness"
+BACKLIGHT_PATH="/sys/class/backlight/10-0045/brightness" # Corrected path
 already_dimmed=0
 
 # Add a small delay to ensure X server is fully up
@@ -55,10 +55,10 @@ while true; do
     
     if [ "$idle" -ge "$IDLE_TIME_MS" ] && [ "$already_dimmed" -eq 0 ]; then
         # Use 2>/dev/null || true to suppress errors if backlight path is wrong or permissions issue
-        echo "$DIM_BRIGHTNESS" > "$BACKLIGHT_PATH" 2>/dev/null || true
+        echo "$DIM_BRIGHTNESS" | sudo tee "$BACKLIGHT_PATH" 2>/dev/null || true
         already_dimmed=1
     elif [ "$idle" -lt "$IDLE_TIME_MS" ] && [ "$already_dimmed" -eq 1 ]; then
-        echo "$NORMAL_BRIGHTNESS" > "$BACKLIGHT_PATH" 2>/dev/null || true
+        echo "$NORMAL_BRIGHTNESS" | sudo tee "$BACKLIGHT_PATH" 2>/dev/null || true
         already_dimmed=0
     fi
     sleep 1
@@ -130,5 +130,3 @@ if [[ $reboot_choice =~ ^[Yy]$ ]]; then
 else
     echo "💡 Reboot manually when ready: sudo reboot"
 fi
-
-
