@@ -45,9 +45,16 @@ NORMAL_BRIGHTNESS=255
 BACKLIGHT_PATH="/sys/class/backlight/10-0045/brightness"
 already_dimmed=0
 
+# Add a small delay to ensure X server is fully up
+sleep 5
+
 while true; do
+    # Use 2>/dev/null to suppress errors if xprintidle isn't ready
+    # Use || echo "999999" to ensure a large number if xprintidle fails
     idle=$(xprintidle 2>/dev/null || echo "999999")
+    
     if [ "$idle" -ge "$IDLE_TIME_MS" ] && [ "$already_dimmed" -eq 0 ]; then
+        # Use 2>/dev/null || true to suppress errors if backlight path is wrong or permissions issue
         echo "$DIM_BRIGHTNESS" > "$BACKLIGHT_PATH" 2>/dev/null || true
         already_dimmed=1
     elif [ "$idle" -lt "$IDLE_TIME_MS" ] && [ "$already_dimmed" -eq 1 ]; then
@@ -75,6 +82,7 @@ Restart=always
 RestartSec=10
 User=pi
 Environment=DISPLAY=:0
+Environment=XDG_SESSION_TYPE=x11 # Explicitly set XDG_SESSION_TYPE for the service
 
 [Install]
 WantedBy=graphical-session.target
@@ -89,8 +97,9 @@ sudo systemctl enable auto-dim.service
 echo "🖱️  Setting up mouse cursor hiding..."
 sudo apt install -y unclutter
 
-# Add to .xsessionrc for autostart
-echo "unclutter -idle 0 &" >> ~/.xsessionrc
+# Add to .xsessionrc for autostart (reliable for graphical sessions)
+# Use 'nohup' and '&' to ensure it runs in background and detaches from terminal
+echo "nohup unclutter -idle 0 &" >> ~/.xsessionrc
 
 # Also create a desktop entry for more robust autostart in graphical environments
 mkdir -p ~/.config/autostart
