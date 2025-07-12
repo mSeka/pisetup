@@ -10,7 +10,7 @@ echo "🚀 Raspberry Pi 5 Auto Setup (Skipping Updates)"
 echo "==============================================="
 echo "This will:"
 echo "  ✅ Switch to X11"
-echo "  ✅ Setup auto-dimming (30 second timeout)"
+echo "  ✅ Setup auto-dimming (5 second timeout)"
 echo "  ✅ Configure autostart on every boot"
 echo "  ✅ Hide mouse cursor after inactivity"
 echo ""
@@ -36,10 +36,10 @@ echo "📋 Installing xprintidle..."
 sudo apt install -y xprintidle
 
 # Create auto-dimming script
-echo "💡 Setting up auto-dimming..."
+echo "💡 Setting up auto-dimming (5 second timeout)..."
 sudo tee /usr/local/bin/auto-dim.sh > /dev/null << 'EOF'
 #!/bin/bash
-IDLE_TIME_MS=30000
+IDLE_TIME_MS=5000 # Changed to 5 seconds
 DIM_BRIGHTNESS=51
 NORMAL_BRIGHTNESS=255
 BACKLIGHT_PATH="/sys/class/backlight/10-0045/brightness"
