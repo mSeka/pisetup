@@ -14,13 +14,6 @@ echo "  ✅ Setup auto-dimming (30 second timeout)"
 echo "  ✅ Configure autostart on every boot"
 echo ""
 
-# Confirm installation
-read -p "Continue? (y/n): " confirm
-if [[ ! $confirm =~ ^[Yy]$ ]]; then
-    echo "Installation cancelled."
-    exit 0
-fi
-
 # Check if running as root
 if [[ $EUID -eq 0 ]]; then
     echo "❌ Don't run as root. Run as pi user."
