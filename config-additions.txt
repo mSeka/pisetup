@@ -1,0 +1,10 @@
+# Add these lines to config.txt on the boot partition
+# for Waveshare PI5-HMI-080C display support
+
+# Waveshare PI5-HMI-080C Display Configuration
+dtoverlay=vc4-kms-v3d
+dtoverlay=ov5647
+dtoverlay=vc4-kms-dsi-waveshare-panel,10_1_inch,dsi0
+
+# Enable auto-setup on first boot
+dtparam=audio=on
