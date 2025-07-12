@@ -12,6 +12,7 @@ echo "This will:"
 echo "  ✅ Switch to X11"
 echo "  ✅ Setup auto-dimming (30 second timeout)"
 echo "  ✅ Configure autostart on every boot"
+echo "  ✅ Hide mouse cursor after inactivity"
 echo ""
 
 # Check if running as root
@@ -59,8 +60,8 @@ EOF
 
 sudo chmod +x /usr/local/bin/auto-dim.sh
 
-# Create systemd service
-echo "⚙️  Creating autostart service..."
+# Create systemd service for auto-dimming
+echo "⚙️  Creating auto-dimming autostart service..."
 sudo tee /etc/systemd/system/auto-dim.service > /dev/null << 'EOF'
 [Unit]
 Description=Auto Dim Display After Inactivity
@@ -79,13 +80,36 @@ Environment=DISPLAY=:0
 WantedBy=graphical-session.target
 EOF
 
-# Enable service for autostart
+# Enable auto-dimming service for autostart
 sudo systemctl daemon-reload
 sudo systemctl enable auto-dim.service
 
+
+# --- ADDING MOUSE CURSOR HIDING ---
+echo "🖱️  Setting up mouse cursor hiding..."
+sudo apt install -y unclutter
+
+# Add to .xsessionrc for autostart
+echo "unclutter -idle 0 &" >> ~/.xsessionrc
+
+# Also create a desktop entry for more robust autostart in graphical environments
+mkdir -p ~/.config/autostart
+cat > ~/.config/autostart/unclutter.desktop << 'EOF'
+[Desktop Entry]
+Type=Application
+Name=Unclutter
+Exec=unclutter -idle 0
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+EOF
+echo "🖱️  Mouse cursor hiding configured."
+# --- END MOUSE CURSOR HIDING ---
+
+
 echo ""
 echo "✅ Setup completed successfully!"
-echo "✅ Auto-dimming will start on every boot"
+echo "✅ Auto-dimming and mouse cursor hiding will start on every boot"
 echo ""
 echo "⚠️  Reboot required for changes to take effect"
 echo ""
